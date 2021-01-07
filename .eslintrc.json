@@ -20,6 +20,8 @@
     "class-methods-use-this": "off",
     "no-useless-constructor": "error",
     "no-var": "error",
+    "no-underscore-dangle": "off",
+    "prefer-arrow-callback": "off",
     "no-duplicate-imports": "error",
     "prefer-spread": "error",
     "prefer-destructuring": [
@@ -32,7 +34,7 @@
     "no-unused-vars": [
       "error",
       {
-        "argsIgnorePattern": "req|res|next|val"
+        "argsIgnorePattern": "req|res|next|val|err"
       }
     ],
     "node/no-unsupported-features/es-syntax": [
