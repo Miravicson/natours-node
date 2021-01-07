@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
-const userEnum = ['user', 'guide', 'lead-guide', 'admin'];
+const userRoleEnum = ['user', 'guide', 'lead-guide', 'admin'];
 
 const userSchema = new mongoose.Schema(
   {
@@ -33,8 +33,8 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: {
-        values: userEnum,
-        message: `The user role must be one of ${userEnum.join(', ')}.`,
+        values: userRoleEnum,
+        message: `The user role must be one of ${userRoleEnum.join(', ')}.`,
       },
       default: 'user',
     },
@@ -146,5 +146,5 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 const User = mongoose.model('User', userSchema);
-
+User.userRoleEnum = userRoleEnum;
 module.exports = User;

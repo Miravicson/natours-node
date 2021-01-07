@@ -26,11 +26,28 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+  // 1) ensure that admin role cannot be created on signup
+  if (req.body.role === 'admin') {
+    return next(new AppError('You cannot create an admin role on signup', 400));
+  }
+
+  // 2) ensure that the roles is one of the userRoleEnum types
+  if (!User.userRoleEnum.includes(req.body.role)) {
+    return next(
+      new AppError(
+        `The user role must be of the type ${User.userRoleEnum
+          .filter((user) => user !== 'admin')
+          .join(', ')}`,
+        400
+      )
+    );
+  }
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    role: req.body.role,
   });
 
   return createSendToken(newUser, 201, res);

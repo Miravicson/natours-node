@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
 const slugify = require('slugify');
+const User = require('./userModel');
 // const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
@@ -73,6 +74,32 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number], // longitude, latitude
+      address: String,
+      description: String,
+    },
+    locations: [
+      // specifying an array creates an embedded document
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number], // longitude, latitude
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: Array,
     createdAt: {
       type: Date,
       select: false,
@@ -96,6 +123,17 @@ tourSchema.virtual('durationWeeks').get(function (value) {
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() and not on insertMany
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+// This middleware embeds the user document in the guides array from the user ids passed in.
+tourSchema.pre('save', async function (next) {
+  const guidesPromises = this.guides.map(async (id) => {
+    const guide = await User.findById(id);
+    return guide;
+  });
+  this.guides = await Promise.all(guidesPromises);
+  this.save();
   next();
 });
 

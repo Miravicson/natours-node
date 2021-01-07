@@ -9,7 +9,8 @@ const utils = require('../../utils');
 // READ JSON FILE
 
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+  // fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+  fs.readFileSync(`${__dirname}/tours.json`, 'utf-8')
 );
 
 // IMPORT DATA INTO DB
@@ -59,7 +60,9 @@ const processCommand = async (connection) => {
       await exportData();
       break;
     default:
-      console.log('Unrecognized command');
+      console.log(
+        '\n To run the application run node /dev-data/data/import-dev-data.js with the following options\n "--import": to import a new data. this would clear already existing data.\n"--export": to export data from the db to an exports.json file.\n"--delete": to delete the already existing data.'
+      );
       break;
   }
   connection.connection.close();
