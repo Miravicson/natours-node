@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
 const slugify = require('slugify');
-const User = require('./userModel');
+// const User = require('./userModel');
 // const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
@@ -99,7 +99,7 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: Array,
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
     createdAt: {
       type: Date,
       select: false,
@@ -120,6 +120,22 @@ tourSchema.virtual('durationWeeks').get(function (value) {
   return this.duration / 7;
 });
 
+// Creating a virtual populate to access child reference without implementing explicit child referencing
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+  // get: function (value) {
+  //   if (value) {
+  //     const newValue = value.map((review) => ({
+  //       review: review.review,
+  //       rating: review.rating,
+  //     }));
+  //     return newValue;
+  //   }
+  // },
+});
+
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() and not on insertMany
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
@@ -127,15 +143,15 @@ tourSchema.pre('save', function (next) {
 });
 
 // This middleware embeds the user document in the guides array from the user ids passed in.
-tourSchema.pre('save', async function (next) {
-  const guidesPromises = this.guides.map(async (id) => {
-    const guide = await User.findById(id);
-    return guide;
-  });
-  this.guides = await Promise.all(guidesPromises);
-  this.save();
-  next();
-});
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => {
+//     const guide = await User.findById(id);
+//     return guide;
+//   });
+//   this.guides = await Promise.all(guidesPromises);
+//   this.save();
+//   next();
+// });
 
 // tourSchema.pre('save', function (next) {
 //   console.log('Will save document...');
@@ -147,12 +163,16 @@ tourSchema.pre('save', async function (next) {
 // });
 
 // QUERY MIDDLEWARE: runs a function before and after a query is executed.
-tourSchema.pre(/^find[One]?/, function (next) {
+tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
   next();
 });
 
+tourSchema.pre(/^find/, function (next) {
+  this.populate({ path: 'guides', select: '-__v -passwordChangedAt' });
+  next();
+});
 tourSchema.post(/^find/, function (docs, next) {
   // console.log(docs);
   // console.log(`Query took ${Date.now() - this.start} milliseconds`);
