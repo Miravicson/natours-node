@@ -85,6 +85,7 @@ exports.getAll = (Model) =>
       .paginate()
       .getQuery()
       .lean({ virtuals: true })
+      // .explain() // used for introspecting queries to determine the document scanned in order to return the results
       .exec();
 
     res.status(200).json({

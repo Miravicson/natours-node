@@ -115,10 +115,12 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
+// instance methods
 userSchema.methods.checkPassword = async function (
   candidatePassword,
   userPassword
 ) {
+  // this refers to the document
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 

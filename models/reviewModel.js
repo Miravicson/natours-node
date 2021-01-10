@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Tour = require('./tourModel');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -32,6 +33,8 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   // this.populate({ path: 'tour', select: 'name' }).populate({
   //   path: 'user',
@@ -42,6 +45,47 @@ reviewSchema.pre(/^find/, function (next) {
     select: 'name photo',
   });
   next();
+});
+
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  // this points to the current model
+  const [stats] = await this.aggregate([
+    { $match: { tour: tourId } },
+    {
+      $group: {
+        _id: '$tour',
+        nRatings: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+  if (stats) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats.nRatings,
+      ratingsAverage: stats.avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
+
+reviewSchema.post('save', function () {
+  // this points to current review
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+// findByIdAndUpdate
+// findByIdAndDelete are both aliases for findOneAnd*
+// reviewSchema.pre(/^findOneAnd/, async function (next) {
+//   this.r = await this.findOne();
+//   next();
+// });
+reviewSchema.post(/^findOneAnd/, async function (docs) {
+  // await this.r.constructor.calcAverageRatings(this.r.tour);
+  await docs.constructor.calcAverageRatings(docs.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
