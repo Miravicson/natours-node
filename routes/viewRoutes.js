@@ -12,12 +12,12 @@ router.post(
 );
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
 router.get('/me', authController.protect, viewController.getAccount);
-router.get('/my-tours', authController.protect, viewController.getMyTours);
 router.get(
-  '/',
-  authController.isLoggedIn,
+  '/my-tours',
+  authController.protect,
   bookingController.createBookingCheckout,
-  viewController.getOverview
+  viewController.getMyTours
 );
+router.get('/', authController.isLoggedIn, viewController.getOverview);
 
 module.exports = router;
