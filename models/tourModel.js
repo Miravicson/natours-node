@@ -201,6 +201,11 @@ tourSchema.pre('aggregate', function (next) {
   next();
 });
 
+tourSchema.statics.getSchemaFields = function () {
+  const schemaFields = Object.keys(this.schema.obj);
+  return schemaFields;
+};
+
 tourSchema.plugin(mongooseLeanVirtuals);
 
 const Tour = mongoose.model('Tour', tourSchema);

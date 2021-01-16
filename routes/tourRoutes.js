@@ -2,6 +2,7 @@ const { Router } = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
+const bookingRouter = require('./bookingRoutes');
 
 const router = Router();
 
@@ -12,6 +13,8 @@ const router = Router();
 // GET /tour/234353vdfdf/reviews/98erevent
 
 router.use('/:tourId/reviews', reviewRouter);
+
+router.use('/:tourId/bookings', bookingRouter);
 
 router
   .route('/top-5-cheap')
@@ -47,6 +50,8 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('admin', 'lead-guide'),
+    tourController.uploadTourImages,
+    tourController.resizeTourImages,
     tourController.updateTour
   )
   .delete(

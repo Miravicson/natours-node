@@ -3,4 +3,4 @@ exports.connectToMongo = require('./connect-to-mongo');
 exports.APIFeatures = require('./apiFeatures');
 exports.AppError = require('./appError');
 exports.catchAsync = require('./catchAsync');
-exports.sendEmail = require('./email');
+exports.Email = require('./email');

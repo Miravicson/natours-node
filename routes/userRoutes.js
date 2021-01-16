@@ -1,11 +1,15 @@
 const { Router } = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const bookingRouter = require('./bookingRoutes');
 
 const router = Router();
 
+router.use('/:userId/bookings', bookingRouter);
+
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
+router.get('/logout', authController.logout);
 router.post('/forgot-password', authController.forgotPassword);
 router.patch('/reset-password/:token', authController.resetPassword);
 
@@ -20,7 +24,11 @@ router.patch(
 router
   .route('/me')
   .get(userController.getMe, userController.getUser)
-  .patch(userController.updateMe)
+  .patch(
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
+    userController.updateMe
+  )
   .delete(userController.deleteMe);
 
 // Add succeeding routes require admin privilege
