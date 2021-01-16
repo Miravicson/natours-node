@@ -14,6 +14,7 @@ const viewRouter = require('./routes/viewRoutes');
 const { setSecurityMiddleWare } = require('./utils/globalMiddleWare');
 
 const app = express();
+app.enable('trust proxy'); // allow our application to trust proxy
 app.set('view engine', 'pug');
 app.set('views', path.resolve('./views'));
 // Serving static files
