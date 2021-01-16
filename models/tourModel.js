@@ -160,11 +160,11 @@ tourSchema.pre('save', function (next) {
 // });
 
 // tourSchema.pre('save', function (next) {
-//   console.log('Will save document...');
+//   logger.info('Will save document...');
 // });
 
 // tourSchema.post('save', function (doc, next) {
-//   console.log(doc);
+//   logger.info(doc);
 //   next();
 // });
 
@@ -180,8 +180,8 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 tourSchema.post(/^find/, function (docs, next) {
-  // console.log(docs);
-  // console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  // logger.info(docs);
+  // logger.info(`Query took ${Date.now() - this.start} milliseconds`);
   next();
 });
 

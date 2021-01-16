@@ -15,7 +15,6 @@ export const login = async (email, password) => {
     if (res.data.status === 'success') {
       showAlert('success', 'Logged in successfully!');
       window.setTimeout(() => {
-        console.log('redirecting to home page');
         location.assign('/');
       }, 1000);
     }
@@ -25,7 +24,6 @@ export const login = async (email, password) => {
 };
 
 export const logout = async (e) => {
-  console.log('logging out');
   try {
     const res = await axios({
       method: 'GET',

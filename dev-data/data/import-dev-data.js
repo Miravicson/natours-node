@@ -9,8 +9,8 @@ const Review = require('../../models/reviewModel');
 const utils = require('../../utils');
 
 process.on('uncaughtException', (err) => {
-  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-  console.log(err.name, err.message);
+  logger.info('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  logger.info(err.name, err.message);
   process.exit(1);
 });
 
@@ -36,19 +36,19 @@ const importData = async () => {
     await Tour.create(tours);
     await User.create(users, { validateBeforeSave: false });
     await Review.create(reviews);
-    console.log('Data successfully loaded!');
+    logger.info('Data successfully loaded!');
   } catch (error) {
-    console.log(error);
+    logger.info(error);
   }
 };
 
 const exportData = async (
   filename = path.resolve('dev-data/data/export.json')
 ) => {
-  console.log('Exporting data');
+  logger.info('Exporting data');
   const exportedTours = await Tour.find().select('-__v').lean().exec();
   await fsWritePro(filename, JSON.stringify(exportedTours, null, 2));
-  console.log(
+  logger.info(
     `Exported tours successfully. ${exportedTours.length} documents saved.`
   );
 };
@@ -60,24 +60,24 @@ const deleteData = async () => {
     await Tour.deleteMany();
     await User.deleteMany();
     await Review.deleteMany();
-    console.log('Data deleted successfully');
+    logger.info('Data deleted successfully');
   } catch (error) {
-    console.log(error);
+    logger.info(error);
   }
 };
 
 const promoteUserToAdmin = async (email) => {
   try {
-    console.log(`Email: ${email}`);
+    logger.info(`Email: ${email}`);
     const user = await User.findOneAndUpdate(
       { email: email },
       { role: 'admin' },
       { new: true }
     ).exec();
-    console.log(user.role);
-    console.log(`The user with email: ${email} has been promoted to admin`);
+    logger.info(user.role);
+    logger.info(`The user with email: ${email} has been promoted to admin`);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
 };
 
@@ -98,7 +98,7 @@ const processCommand = async (connection) => {
       await promoteUserToAdmin(optionOne);
       break;
     default:
-      console.log(
+      logger.info(
         '\n To run the application run node /dev-data/data/import-dev-data.js with the following options\n "--import": to import a new data. this would clear already existing data.\n"--export": to export data from the db to an exports.json file.\n"--delete": to delete the already existing data.\n"--promote-user": to promote user to admin, pass in the user email as an option'
       );
       break;
@@ -107,7 +107,7 @@ const processCommand = async (connection) => {
   process.exit();
 };
 
-console.log('Connecting to database...');
+logger.info('Connecting to database...');
 utils.connectToMongo({
   successfulCallback: (connection) => processCommand(connection),
   failureCallback: (error) => process.exit(error),

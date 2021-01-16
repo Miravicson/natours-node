@@ -4,10 +4,10 @@ const fetchDbUrl = require('./fetch-db-url');
 const DB = fetchDbUrl();
 
 const handleServerShutdown = (server, message) => {
-  console.log(message);
+  logger.info(message);
   if (server) {
     server.close(() => {
-      console.log('Shutting down server because of the above error.');
+      logger.info('Shutting down server because of the above error.');
       process.exit(1);
     });
   } else {
@@ -30,7 +30,7 @@ function connectToMongo({
     })
     .then(
       function connectionSuccessful(connection) {
-        console.log('DB connection successful');
+        logger.info('DB connection successful');
         successfulCallback(connection);
       },
       function connectionFailed(error) {

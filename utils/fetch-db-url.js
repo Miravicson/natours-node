@@ -1,9 +1,9 @@
 module.exports = () => {
   if (process.env.NODE_ENV === 'development') {
-    console.log('Using local database');
+    logger.info('Using local database');
     return process.env.DATABASE_LOCAL;
   }
-  console.log('Using remote database');
+  logger.info('Using remote database');
   return process.env.DATABASE.replace(
     /<DATABASE_PASSWORD>/,
     process.env.DATABASE_PASSWORD

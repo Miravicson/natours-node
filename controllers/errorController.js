@@ -53,7 +53,7 @@ const sendErrorProd = (err, req, res) => {
       // Programming or other unknown error: don't leak error details to the client
     }
     // 1) Log error
-    console.error('Error 💥', err);
+    logger.error('Error 💥', err);
 
     // 2) Send generic message
 
@@ -72,7 +72,7 @@ const sendErrorProd = (err, req, res) => {
     // Programming or other unknown error: don't leak error details to the client
   }
   // 1) Log error
-  console.error('Error 💥', err);
+  logger.error('Error 💥', err);
   // 2) Send generic message
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',

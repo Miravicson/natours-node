@@ -2,6 +2,7 @@ const path = require('path');
 const morgan = require('morgan');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const { AppError } = require('./utils');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -35,9 +36,10 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(compression());
 
 app.use((req, res, next) => {
-  // console.log(req.cookies);
+  // logger.info(req.cookies);
   next();
 });
 

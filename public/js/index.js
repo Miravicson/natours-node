@@ -16,7 +16,7 @@ const bookBtn = document.getElementById('book-tour');
 // DELEGATION
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
-  displayMap(locations); 
+  displayMap(locations);
 }
 
 if (loginForm) {
@@ -39,7 +39,6 @@ if (updateUserForm) {
     form.append('name', document.getElementById('name').value);
     form.append('email', document.getElementById('email').value);
     form.append('photo', document.getElementById('photo').files[0]);
-    console.log(form);
     updateSettings(form, 'data');
   });
 }
@@ -63,9 +62,9 @@ if (updateUserPasswordForm) {
 
 if (bookBtn) {
   bookBtn.addEventListener('click', async (e) => {
-    e.target.textContent = "Processing..."
+    e.target.textContent = 'Processing...';
     const { tourId } = e.target.dataset;
     await bookTour(tourId);
-    e.target.textContent = "Boook tour now!"
-  })
+    e.target.textContent = 'Boook tour now!';
+  });
 }
