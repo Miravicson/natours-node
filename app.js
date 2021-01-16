@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 const { AppError } = require('./utils');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -19,6 +20,13 @@ app.set('view engine', 'pug');
 app.set('views', path.resolve('./views'));
 // Serving static files
 app.use(express.static(path.resolve('./public')));
+
+// Implement cors
+
+app.use(cors());
+// Access-Control-Allow-Origin *
+
+app.options('*', cors()); // enabling cors for preflight requests.
 
 // 1) SECURITY MIDDLEWARE
 
