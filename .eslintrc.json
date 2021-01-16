@@ -11,6 +11,9 @@
     "ecmaVersion": 11,
     "sourceType": "module"
   },
+  "globals": {
+    "logger": true
+  },
   "rules": {
     "prettier/prettier": "error",
     "spaced-comment": "off",

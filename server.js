@@ -2,7 +2,6 @@ require('dotenv').config({ path: './config.env' });
 // Handling uncaught exceptions
 require('./utils/logger');
 
-
 process.on('uncaughtException', (err) => {
   logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   logger.error(err.name, err.message);
