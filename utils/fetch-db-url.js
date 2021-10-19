@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 module.exports = () => {
   if (process.env.NODE_ENV === 'development') {
     logger.info('Using local database');

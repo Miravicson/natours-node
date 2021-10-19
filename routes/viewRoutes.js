@@ -13,6 +13,7 @@ router.post(
   viewController.updateUserData
 );
 router.get('/login', authController.isLoggedIn, viewController.getLoginForm);
+router.get('/signup', authController.isLoggedIn, viewController.getSignupForm);
 router.get('/me', authController.protect, viewController.getAccount);
 router.get(
   '/my-tours',
